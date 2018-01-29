@@ -3,6 +3,8 @@ require 'bigdecimal'
 
 describe "BigDecimal.new" do
 
+  @bd_vers = (`gem list bigdecimal` || '1.0')[/([^(\s]+)\)$/, 1]
+
   it "creates a new object of class BigDecimal" do
     BigDecimal.new("3.14159").should be_kind_of(BigDecimal)
     (0..9).each {|i|
@@ -41,14 +43,14 @@ describe "BigDecimal.new" do
     BigDecimal.new("1E2E3E4E5E").should == BigDecimal.new("100")
   end
 
-  ruby_version_is ""..."2.4" do
+  if @bd_vers < '1.3.0'    # ruby_version_is ""..."2.4" do
     it "treats invalid strings as 0.0" do
       BigDecimal.new("ruby").should == BigDecimal.new("0.0")
       BigDecimal.new("  \t\n \r-\t\t\tInfinity   \n").should == BigDecimal.new("0.0")
     end
   end
 
-  ruby_version_is "2.4" do
+  if @bd_vers >= '1.3.0'   # ruby_version_is "2.4" do
     it "raises ArgumentError for invalid strings" do
       lambda { BigDecimal.new("ruby") }.should raise_error(ArgumentError)
       lambda { BigDecimal.new("  \t\n \r-\t\t\tInfinity   \n") }.should raise_error(ArgumentError)

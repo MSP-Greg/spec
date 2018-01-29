@@ -3,6 +3,8 @@ require 'bigdecimal'
 
 describe "BigDecimal#inspect" do
 
+  @bd_vers = (`gem list bigdecimal` || '1.0')[/([^(\s]+)\)$/, 1]
+
   before :each do
     @bigdec = BigDecimal.new("1234.5678")
   end
@@ -11,7 +13,7 @@ describe "BigDecimal#inspect" do
     @bigdec.inspect.kind_of?(String).should == true
   end
 
-  ruby_version_is ""..."2.4" do
+  if @bd_vers < '1.3.0'    # ruby_version_is ""..."2.4" do
     it "returns String starting with #" do
       @bigdec.inspect[0].should == ?#
     end
@@ -39,7 +41,7 @@ describe "BigDecimal#inspect" do
     end
   end
 
-  ruby_version_is "2.4" do
+  if @bd_vers >= '1.3.0'   # ruby_version_is "2.4" do
     it "looks like this" do
       @bigdec.inspect.should == "0.12345678e4"
     end
