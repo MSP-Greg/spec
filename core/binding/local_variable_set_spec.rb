@@ -59,13 +59,14 @@ describe "Binding#local_variable_set" do
 
   it "raises a NameError on global access" do
     bind = binding
-    -> { bind.local_variable_set(:$0, "") }.should raise_error(NameError)
+    v = :$0
+    -> { bind.local_variable_set(v, "") }.should raise_error(NameError)
   end
 
   it "raises a NameError on special variable access" do
     bind = binding
-    -> { bind.local_variable_set(:$~, "") }.should raise_error(NameError)
-    -> { bind.local_variable_set(:$_, "") }.should raise_error(NameError)
+    [:$~, :$_].each do |v|
+      -> { bind.local_variable_set(v, "") }.should raise_error(NameError)
+    end
   end
-
 end
