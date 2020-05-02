@@ -5,8 +5,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu, macos, windows ]
-        ruby: [ 2.5.8, 2.6.6, 2.7.1 ]
+        os: [ windows ]
+        ruby: [ 2.5.5, 2.5.6, 2.5.7, 2.5.8, 2.6.3, 2.6.4, 2.6.5, 2.6.6 ]
     runs-on: ${{ matrix.os }}-latest
     steps:
     - name: git config autocrlf
@@ -41,14 +41,3 @@ jobs:
         [Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("IBM437")
         [Console]::InputEncoding  = [System.Text.Encoding]::GetEncoding("IBM437")
         ../mspec/bin/mspec -j
-
-  rubocop:
-    name: RuboCop
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 2.6
-    - run: gem install rubocop:0.77.0
-    - run: rubocop --parallel
