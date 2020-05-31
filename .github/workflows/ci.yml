@@ -6,7 +6,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu, macos, windows ]
-        ruby: [ 2.5.8, 2.6.6, 2.7.1 ]
+        ruby: [ 2.5.8, 2.6.6, 2.7.1, head ]
+        include:
+          - { os: windows, ruby: mingw }
+          - { os: windows, ruby: mswin }
+        exclude:
+          - { os: windows, ruby: head }
     runs-on: ${{ matrix.os }}-latest
     continue-on-error: ${{ matrix.os == 'windows' && matrix.ruby == '2.5.8' }}
     steps:
