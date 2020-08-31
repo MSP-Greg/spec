@@ -5,15 +5,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu, macos, windows ]
+        os: [ ubuntu-20.04, ubuntu-18.04, macos-latest, windows-latest ]
         ruby: [ 2.5.8, 2.6.6, 2.7.1 ]
         exclude:
-        - { os: windows, ruby: 2.5.8 }
-    runs-on: ${{ matrix.os }}-latest
+        - { os: windows-latest, ruby: 2.5.8 }
+    runs-on: ${{ matrix.os }}
     steps:
     - name: git config autocrlf
       run: git config --global core.autocrlf false
-      if: matrix.os == 'windows'
+      if: startsWith(matrix.os, 'windows')
 
     - uses: actions/checkout@v2
     - uses: ruby/setup-ruby@v1
@@ -24,18 +24,18 @@ jobs:
       run: git clone https://github.com/ruby/mspec.git ../mspec
 
     - name: Run specs
-      if: matrix.os != 'windows'
+      if: startsWith(matrix.os, 'windows') == false
       env:
         CHECK_LEAKS: true
       run: ../mspec/bin/mspec --timeout 30
     - name: Run C-API specs as C++
-      if: matrix.os != 'windows'
+      if: startsWith(matrix.os, 'windows') == false
       env:
         SPEC_CAPI_CXX: true
       run: ../mspec/bin/mspec :capi
 
     - name: Run specs (Windows)
-      if: matrix.os == 'windows'
+      if: startsWith(matrix.os, 'windows')
       env:
         CHECK_LEAKS: true
       run: |
